@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-
 	pngFileName := "stick.png"
 	absPath, err := filepath.Abs(pngFileName)
 	if err != nil {
@@ -25,6 +24,10 @@ func main() {
 	}
 	defer file.Close()
 
+	ConvertPngToIco(file)
+}
+
+func ConvertPngToIco(file *os.File) {
 	img, err := png.Decode(file)
 	if err != nil {
 		log.Fatal(err)
@@ -44,5 +47,4 @@ func main() {
 		log.Fatal(err)
 	}
 	println("Konvertiert")
-
 }
