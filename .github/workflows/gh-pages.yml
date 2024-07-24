@@ -26,7 +26,7 @@ jobs:
         env:
           GOOS: js
           GOARCH: wasm
-        run:
+        run: |
           go build -o assets/. ./cmd/img_converter/img_converter.go
           cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" assets/wasm_exec.js
 
