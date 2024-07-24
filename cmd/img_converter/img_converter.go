@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
 	"image"
 	"image/draw"
 	"image/png"
@@ -36,7 +38,12 @@ func ConvertPngToIco(file *os.File) {
 	rgba := image.NewRGBA(img.Bounds())
 	draw.Draw(rgba, rgba.Bounds(), img, image.Point{}, draw.Src)
 
-	icoFile, err := os.Create("output.ico")
+	fmt.Print("Download Pfad angeben:")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	outputPath := filepath.Join(scanner.Text(), "output.ico")
+
+	icoFile, err := os.Create(outputPath)
 	if err != nil {
 		log.Fatal(err)
 	}
