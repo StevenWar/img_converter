@@ -14,13 +14,13 @@ import (
 )
 
 func main() {
-	pngFileName := "stick.png"
-	absPath, err := filepath.Abs(pngFileName)
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	file, err := os.Open(absPath)
+	fmt.Print("Pfad des PNGs angeben:")
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	inputPath := scanner.Text()
+
+	file, err := os.Open(inputPath)
 	if err != nil {
 		log.Fatal(err)
 	}
