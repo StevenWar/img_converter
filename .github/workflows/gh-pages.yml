@@ -1,0 +1,62 @@
+---
+name: Deploy WebAssembly to GitHub pages
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: 'go.mod'
+
+      - name: Build
+        env:
+          GOOS: js
+          GOARCH: wasm
+        run: |
+          go build -o assets/. ./cmd/img_converter/img_converter.go
+          cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" assets/wasm_exec.js
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: go-wasm
+          path: assets
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs:
+      - build
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: go-wasm
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: assets
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
